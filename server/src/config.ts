@@ -96,8 +96,12 @@ export const config = {
   },
 
   db: {
-    url: str("DATABASE_URL"),
-    dir: str("PGLITE_DIR", path.join(DATA_DIR, "pg")),
+    get url() {
+      return str("DATABASE_URL");
+    },
+    get dir() {
+      return str("PGLITE_DIR", path.join(DATA_DIR, "pg"));
+    },
   },
 
   ai: {

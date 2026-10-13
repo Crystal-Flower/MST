@@ -1223,7 +1223,6 @@ api.post(
 
 api.get(
   "/bins/:id/forecast",
-  anyone,
   h(async (req) => forecastBinFill(req.params.id)),
 );
 

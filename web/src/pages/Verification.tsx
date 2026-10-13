@@ -217,7 +217,7 @@ function History() {
                   <Td>{v.binId}</Td>
                   <Td>{v.requestCode ? <span className="font-mono text-[12.5px]">{v.requestCode}</span> : <span className="text-ink-4">–</span>}</Td>
                   <Td>
-                    <Pill tone={v.verified ? "success" : "danger"}>{v.decision.replace(/_/g, " ").toLowerCase()}</Pill>
+                    <Pill tone={v.verified ? "success" : "danger"}>{(v.decision ?? (v.verified ? "verified" : "rejected")).replace(/_/g, " ").toLowerCase()}</Pill>
                   </Td>
                   <Td align="right">{v.confidence.toFixed(1)}%</Td>
                   <Td className="max-w-[280px]">

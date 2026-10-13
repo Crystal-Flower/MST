@@ -164,7 +164,7 @@ export function MapView({
             <Marker key={w.id} position={pos} icon={workerIcon(initials, moving, w.id === highlightWorker)} zIndexOffset={1000}>
               <Tooltip className="astra-tip" direction="top" offset={[0, -14]}>
                 <div className="font-medium">{w.name}</div>
-                <div className="opacity-80">{w.status.replace(/_/g, " ").toLowerCase()}</div>
+                <div className="opacity-80">{(w.status ?? "offline").replace(/_/g, " ").toLowerCase()}</div>
               </Tooltip>
             </Marker>
           );

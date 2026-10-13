@@ -286,7 +286,7 @@ function JobCard({ data }: { data: MeJob }) {
                 {current && <div className="mt-0.5 text-[12.5px] text-ink-2">{s.body}</div>}
                 {current && i === 1 && refused && (
                   <div className="mt-2 flex items-center gap-1.5 rounded-md border border-bad-line bg-bad-bg px-2.5 py-1.5 text-[12.5px] text-bad">
-                    <CircleX className="h-3.5 w-3.5" /> Last card refused: {lastRfid!.result.replace(/_/g, " ").toLowerCase()}
+                    <CircleX className="h-3.5 w-3.5" /> Last card refused: {(lastRfid?.result ?? "refused").replace(/_/g, " ").toLowerCase()}
                   </div>
                 )}
                 {current && i === 2 && (

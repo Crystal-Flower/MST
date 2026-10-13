@@ -34,8 +34,11 @@ async function connect(): Promise<Driver> {
       close: () => pool.end(),
     };
   }
-  fs.mkdirSync(config.db.dir, { recursive: true });
-  const db = new PGlite(config.db.dir);
+  const isMemory = !config.db.dir || config.db.dir.startsWith("memory:") || config.db.dir === ":memory:";
+  if (!isMemory) {
+    fs.mkdirSync(config.db.dir, { recursive: true });
+  }
+  const db = new PGlite(isMemory ? undefined : config.db.dir);
   await db.waitReady;
   return {
     kind: "pglite",

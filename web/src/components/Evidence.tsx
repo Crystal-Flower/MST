@@ -44,7 +44,7 @@ export function EvidencePanel({ v, compact }: { v: Verification; compact?: boole
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <Pill tone={v.verified ? "success" : "danger"} icon={v.verified ? <CircleCheck className="h-3.5 w-3.5" /> : <CircleX className="h-3.5 w-3.5" />}>
-              {v.decision.replace(/_/g, " ")}
+              {(v.decision ?? (v.verified ? "VERIFIED" : "REJECTED")).replace(/_/g, " ")}
             </Pill>
             <span className="text-[13px] text-ink-2">{label}</span>
           </div>

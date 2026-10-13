@@ -217,7 +217,7 @@ export function RequestDetail() {
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1 border-t border-line-2 pt-3 text-[12.5px] text-ink-2">
             {d.collectionEvents.map((c, i) => (
               <span key={i}>
-                <span className="text-ink-3 num">{time(c.ts, true)}</span> {c.type.replace(/_/g, " ").toLowerCase()} {c.data?.fill !== undefined && <span className="text-ink-3">at {Math.round(c.data.fill)}%</span>}
+                <span className="text-ink-3 num">{time(c.ts, true)}</span> {(c.type ?? "event").replace(/_/g, " ").toLowerCase()} {c.data?.fill !== undefined && <span className="text-ink-3">at {Math.round(c.data.fill)}%</span>}
               </span>
             ))}
           </div>

@@ -54,4 +54,4 @@ export const initials = (name?: string | null) =>
     .slice(0, 2)
     .join("")
     .toUpperCase();
-export const titleCase = (s: string) => s.toLowerCase().replace(/(^|[\s_])(\w)/g, (_m, a, b) => `${a === "_" ? " " : a}${b.toUpperCase()}`);
+export const titleCase = (s?: string) => (s ?? "").toLowerCase().replace(/(^|[\s_])(\w)/g, (_m, a, b) => `${a === "_" ? " " : a}${b.toUpperCase()}`);

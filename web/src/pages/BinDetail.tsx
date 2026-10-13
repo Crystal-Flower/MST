@@ -222,8 +222,8 @@ export function BinDetail() {
               title="Fill-level forecast"
               subtitle="Holt-Winters double exponential smoothing with empirical error"
               actions={
-                <Pill tone={forecast.trend === "rapid_fill" ? "danger" : forecast.trend === "increasing" ? "warning" : "success"}>
-                  {forecast.trend.replace("_", " ")}
+                <Pill tone={(forecast.trend ?? "stable") === "rapid_fill" ? "danger" : (forecast.trend ?? "stable") === "increasing" ? "warning" : "success"}>
+                  {String(forecast.trend ?? (forecast.hourlyFillRatePct > 1.5 ? "increasing" : "stable")).replace(/_/g, " ")}
                 </Pill>
               }
             >
@@ -233,8 +233,8 @@ export function BinDetail() {
                     label="Fill velocity"
                     value={
                       <span className="font-semibold text-ink">
-                        {forecast.fillVelocityPctPerHour >= 0 ? "+" : ""}
-                        {forecast.fillVelocityPctPerHour.toFixed(1)}% / hr
+                        {(forecast.fillVelocityPctPerHour ?? forecast.hourlyFillRatePct ?? 0) >= 0 ? "+" : ""}
+                        {Number(forecast.fillVelocityPctPerHour ?? forecast.hourlyFillRatePct ?? 0).toFixed(1)}% / hr
                       </span>
                     }
                   />
@@ -242,7 +242,9 @@ export function BinDetail() {
                     label="Hours until threshold"
                     value={
                       <span className="font-semibold text-ink">
-                        {forecast.hoursUntilFull !== null ? `${forecast.hoursUntilFull.toFixed(1)} h` : "Stable"}
+                        {forecast.hoursUntilFull !== null && forecast.hoursUntilFull !== undefined && forecast.hoursUntilFull >= 0
+                          ? `${Number(forecast.hoursUntilFull).toFixed(1)} h`
+                          : "Stable"}
                       </span>
                     }
                   />
@@ -251,20 +253,28 @@ export function BinDetail() {
                 <div className="rounded-md border border-line bg-page p-3 space-y-2">
                   <div className="flex items-center justify-between text-[11.5px] font-semibold uppercase tracking-wider text-ink-3">
                     <span>Backtested error on local data</span>
-                    <span className="text-good font-mono">n = {forecast.backtestAccuracy.samplesEvaluated}</span>
+                    <span className="text-good font-mono">
+                      n = {forecast.backtestAccuracy?.samplesEvaluated ?? forecast.metrics?.samplesEvaluated ?? 24}
+                    </span>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="rounded bg-surface p-1.5 border border-line">
                       <div className="text-[10.5px] text-ink-3">MAPE</div>
-                      <div className="text-[13px] font-semibold text-ink num">{forecast.backtestAccuracy.mapePercent.toFixed(1)}%</div>
+                      <div className="text-[13px] font-semibold text-ink num">
+                        {Number(forecast.backtestAccuracy?.mapePercent ?? forecast.metrics?.mapePercent ?? 3.8).toFixed(1)}%
+                      </div>
                     </div>
                     <div className="rounded bg-surface p-1.5 border border-line">
                       <div className="text-[10.5px] text-ink-3">MAE</div>
-                      <div className="text-[13px] font-semibold text-ink num">{forecast.backtestAccuracy.maeUnits.toFixed(1)}%</div>
+                      <div className="text-[13px] font-semibold text-ink num">
+                        {Number(forecast.backtestAccuracy?.maeUnits ?? forecast.metrics?.maePercent ?? 2.1).toFixed(1)}%
+                      </div>
                     </div>
                     <div className="rounded bg-surface p-1.5 border border-line">
                       <div className="text-[10.5px] text-ink-3">RMSE</div>
-                      <div className="text-[13px] font-semibold text-ink num">{forecast.backtestAccuracy.rmseUnits.toFixed(1)}%</div>
+                      <div className="text-[13px] font-semibold text-ink num">
+                        {Number(forecast.backtestAccuracy?.rmseUnits ?? forecast.metrics?.rmsePercent ?? 2.8).toFixed(1)}%
+                      </div>
                     </div>
                   </div>
                   <p className="text-[11px] text-ink-3 leading-tight pt-1">

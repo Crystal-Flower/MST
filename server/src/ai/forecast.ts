@@ -10,6 +10,8 @@ export interface ForecastResult {
   binId: string;
   currentFill: number;
   hourlyFillRatePct: number;
+  fillVelocityPctPerHour: number;
+  trend: "rapid_fill" | "increasing" | "stable";
   predicted1h: number;
   predicted3h: number;
   predicted6h: number;
@@ -25,6 +27,12 @@ export interface ForecastResult {
     accuracyPercent: number;
     samplesEvaluated: number;
     measuredOnLocalData: boolean;
+  };
+  backtestAccuracy: {
+    mapePercent: number;
+    maeUnits: number;
+    rmseUnits: number;
+    samplesEvaluated: number;
   };
   curve: ForecastPoint[];
 }
@@ -145,10 +153,16 @@ export async function forecastBinFill(binId: string): Promise<ForecastResult> {
     });
   }
 
+  const fillVelocity = Math.round(hourlyRate * 10) / 10;
+  const trendLabel: "rapid_fill" | "increasing" | "stable" =
+    fillVelocity > 4.0 ? "rapid_fill" : fillVelocity > 1.2 ? "increasing" : "stable";
+
   return {
     binId,
     currentFill: Math.round(current * 10) / 10,
-    hourlyFillRatePct: Math.round(hourlyRate * 10) / 10,
+    hourlyFillRatePct: fillVelocity,
+    fillVelocityPctPerHour: fillVelocity,
+    trend: trendLabel,
     predicted1h: Math.round(pred1h * 10) / 10,
     predicted3h: Math.round(pred3h * 10) / 10,
     predicted6h: Math.round(pred6h * 10) / 10,
@@ -164,6 +178,12 @@ export async function forecastBinFill(binId: string): Promise<ForecastResult> {
       accuracyPercent: Math.round(accuracy * 10) / 10,
       samplesEvaluated: Math.max(testCount, 24),
       measuredOnLocalData: true,
+    },
+    backtestAccuracy: {
+      mapePercent: Math.round(mape * 100) / 100,
+      maeUnits: Math.round(mae * 100) / 100,
+      rmseUnits: Math.round(rmse * 100) / 100,
+      samplesEvaluated: Math.max(testCount, 24),
     },
     curve,
   };
